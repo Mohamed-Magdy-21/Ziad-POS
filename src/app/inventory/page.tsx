@@ -67,7 +67,7 @@ export default function InventoryPage() {
     const duplicateCode = products.some(
       (product) =>
         product.productCode.trim().toLowerCase() ===
-          form.productCode.trim().toLowerCase() &&
+        form.productCode.trim().toLowerCase() &&
         product.id !== editingId
     );
     if (duplicateCode) {
@@ -148,31 +148,40 @@ export default function InventoryPage() {
   return (
     <div className="space-y-8">
       <section className="grid gap-4 md:grid-cols-3">
-        <article className="card-surface">
-          <p className="text-sm text-slate-500">Total SKUs</p>
-          <p className="mt-2 text-3xl font-bold text-slate-900">
-            {products.length}
-          </p>
-          <p className="text-xs text-slate-500">Unique products in inventory.</p>
+        <article className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80 relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-sm font-medium text-slate-500">Total SKUs</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900">
+              {products.length}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">Unique products in inventory</p>
+          </div>
+          <div className="absolute right-0 top-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-indigo-50 blur-2xl"></div>
         </article>
-        <article className="card-surface">
-          <p className="text-sm text-slate-500">Items on Hand</p>
-          <p className="mt-2 text-3xl font-bold text-slate-900">
-            {products.reduce((sum, product) => sum + product.stockQuantity, 0)}
-          </p>
-          <p className="text-xs text-slate-500">Individual units in stock.</p>
+        <article className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80 relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-sm font-medium text-slate-500">Items on Hand</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900">
+              {products.reduce((sum, product) => sum + product.stockQuantity, 0)}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">Total units across all SKUs</p>
+          </div>
+          <div className="absolute right-0 top-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-emerald-50 blur-2xl"></div>
         </article>
-        <article className="card-surface">
-          <p className="text-sm text-slate-500">Inventory Value</p>
-          <p className="mt-2 text-3xl font-bold text-indigo-600">
-            ${totalInventoryValue.toFixed(2)}
-          </p>
-          <p className="text-xs text-slate-500">Retail value at list price.</p>
+        <article className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80 relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-sm font-medium text-slate-500">Inventory Value</p>
+            <p className="mt-2 text-3xl font-bold text-indigo-600">
+              ${totalInventoryValue.toFixed(2)}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">Retail value at current prices</p>
+          </div>
+          <div className="absolute right-0 top-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-violet-50 blur-2xl"></div>
         </article>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="card-surface">
+        <article className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-slate-900">
@@ -195,7 +204,7 @@ export default function InventoryPage() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 ml-1">
                 Product Code / SKU
               </label>
               <input
@@ -206,13 +215,13 @@ export default function InventoryPage() {
                     productCode: event.target.value,
                   }))
                 }
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
                 placeholder="e.g. ESP-1001"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 ml-1">
                 Product Name
               </label>
               <input
@@ -220,14 +229,14 @@ export default function InventoryPage() {
                 onChange={(event) =>
                   setForm((prev) => ({ ...prev, name: event.target.value }))
                 }
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
                 placeholder="e.g. Cappuccino"
                 required
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label className="text-sm font-medium text-slate-700 ml-1">
                   Price ($)
                 </label>
                 <input
@@ -238,13 +247,13 @@ export default function InventoryPage() {
                   onChange={(event) =>
                     setForm((prev) => ({ ...prev, price: event.target.value }))
                   }
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
                   placeholder="0.00"
                   required
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label className="text-sm font-medium text-slate-700 ml-1">
                   Stock Quantity
                 </label>
                 <input
@@ -258,7 +267,7 @@ export default function InventoryPage() {
                       stockQuantity: event.target.value,
                     }))
                   }
-                  className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
                   placeholder="0"
                   required
                 />
@@ -266,14 +275,14 @@ export default function InventoryPage() {
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+              className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:scale-[1.02] hover:shadow-indigo-500/30 active:scale-[0.98]"
             >
               {editingId ? "Save Changes" : "Add Product"}
             </button>
           </form>
         </article>
 
-        <article className="card-surface">
+        <article className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80">
           <h2 className="text-lg font-semibold text-slate-900">
             Adjust Stock
           </h2>
@@ -283,13 +292,13 @@ export default function InventoryPage() {
 
           <form onSubmit={handleStockSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 ml-1">
                 Select Product
               </label>
               <select
                 value={stockProductId}
                 onChange={(event) => setStockProductId(event.target.value)}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
               >
                 <option value="">Choose a product</option>
                 {products.map((product) => (
@@ -300,34 +309,32 @@ export default function InventoryPage() {
               </select>
             </div>
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-slate-700">Mode</label>
+              <label className="text-sm font-medium text-slate-700 ml-1">Mode</label>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setStockMode("add")}
-                  className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
-                    stockMode === "add"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-100 text-slate-500"
-                  }`}
+                  className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${stockMode === "add"
+                    ? "bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500/20"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                    }`}
                 >
-                  Add
+                  Add Stock
                 </button>
                 <button
                   type="button"
                   onClick={() => setStockMode("deduct")}
-                  className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
-                    stockMode === "deduct"
-                      ? "bg-rose-100 text-rose-700"
-                      : "bg-slate-100 text-slate-500"
-                  }`}
+                  className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${stockMode === "deduct"
+                    ? "bg-rose-100 text-rose-700 ring-2 ring-rose-500/20"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                    }`}
                 >
-                  Deduct
+                  Deduct Stock
                 </button>
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 ml-1">
                 Quantity
               </label>
               <input
@@ -336,12 +343,12 @@ export default function InventoryPage() {
                 step="1"
                 value={stockAmount}
                 onChange={(event) => setStockAmount(event.target.value)}
-                className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 mt-1"
               />
             </div>
             <button
               type="submit"
-              className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+              className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:scale-[1.02] hover:shadow-indigo-500/30 active:scale-[0.98] bg-slate-900 hover:bg-slate-800 shadow-slate-500/20"
             >
               Apply Adjustment
             </button>
@@ -349,7 +356,7 @@ export default function InventoryPage() {
         </article>
       </section>
 
-      <section className="card-surface">
+      <section className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">
@@ -367,50 +374,50 @@ export default function InventoryPage() {
         </div>
 
         <div className="mt-6 overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <table className="min-w-full divide-y divide-slate-200 text-left text-base">
             <thead>
               <tr>
-                <th className="px-3 py-2 font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-base font-semibold text-slate-500">
                   Product
                 </th>
-                <th className="px-3 py-2 font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-base font-semibold text-slate-500">
                   SKU
                 </th>
-                <th className="px-3 py-2 font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-base font-semibold text-slate-500">
                   Price
                 </th>
-                <th className="px-3 py-2 font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-base font-semibold text-slate-500">
                   Stock
                 </th>
-                <th className="px-3 py-2 font-semibold text-slate-500"></th>
+                <th className="px-3 py-2.5 text-base font-semibold text-slate-500"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {products.map((product) => (
                 <tr key={product.id}>
-                  <td className="px-3 py-2 font-semibold text-slate-800">
+                  <td className="px-3 py-2.5 text-base font-semibold text-slate-800">
                     {product.name}
                   </td>
-                  <td className="px-3 py-2 text-slate-500">
+                  <td className="px-3 py-2.5 text-base text-slate-500">
                     {product.productCode}
                   </td>
-                  <td className="px-3 py-2 text-slate-500">
+                  <td className="px-3 py-2.5 text-base text-slate-500">
                     ${product.price.toFixed(2)}
                   </td>
-                  <td className="px-3 py-2 text-slate-500">
+                  <td className="px-3 py-2.5 text-base font-medium text-slate-700">
                     {product.stockQuantity}
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2.5">
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => handleEdit(product)}
-                        className="text-sm font-semibold text-indigo-600 hover:text-indigo-800"
+                        className="text-base font-semibold text-indigo-600 hover:text-indigo-800"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(product.id, product.name)}
-                        className="text-sm font-semibold text-rose-600 hover:text-rose-800"
+                        className="text-base font-semibold text-rose-600 hover:text-rose-800"
                       >
                         Delete
                       </button>
@@ -432,4 +439,3 @@ export default function InventoryPage() {
     </div>
   );
 }
-

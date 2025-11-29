@@ -177,9 +177,43 @@ const defaultProducts: Product[] = [
        id,
        date: new Date().toISOString(),
      };
-     setSales((prev) => [payload, ...prev]);
+     
+     // Update state
+     setSales((prev) => {
+       const updated = [payload, ...prev];
+       
+       // Immediately save to localStorage to ensure data is available for navigation
+       if (typeof window !== "undefined" && ready) {
+         try {
+           const currentData = localStorage.getItem(STORAGE_KEY);
+           let currentProducts = products;
+           
+           if (currentData) {
+             try {
+               const parsed = JSON.parse(currentData);
+               if (parsed.products?.length) {
+                 currentProducts = parsed.products;
+               }
+             } catch (e) {
+               // Use current products state if parsing fails
+             }
+           }
+           
+           const toSave = JSON.stringify({
+             products: currentProducts,
+             sales: updated,
+           });
+           localStorage.setItem(STORAGE_KEY, toSave);
+         } catch (error) {
+           console.error("Failed to save sale to localStorage", error);
+         }
+       }
+       
+       return updated;
+     });
+     
      return id;
-   }, []);
+   }, [products, ready]);
  
    const value = useMemo<DataContextValue>(
      () => ({

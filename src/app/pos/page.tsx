@@ -183,12 +183,17 @@ export default function PosPage() {
 
     setCart([]);
     setMessage("Sale completed successfully.");
-    router.push(`/invoice/${saleId}`);
+
+    // Wait for state to be saved to localStorage before navigating
+    // Use setTimeout to ensure React state updates and localStorage sync complete
+    setTimeout(() => {
+      router.push(`/invoice/${saleId}`);
+    }, 100);
   };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-      <section className="card-surface space-y-6">
+      <section className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">
             Point of Sale
@@ -202,23 +207,40 @@ export default function PosPage() {
           onSubmit={handleAdd}
           className="grid gap-4 md:grid-cols-[2fr,1fr,auto]"
         >
-          <input
-            value={codeInput}
-            onChange={(event) => setCodeInput(event.target.value)}
-            className="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-            placeholder="Product code / barcode"
-          />
+          <div className="relative">
+            <input
+              value={codeInput}
+              onChange={(event) => setCodeInput(event.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 pl-10"
+              placeholder="Scan barcode or type code..."
+              autoFocus
+            />
+            <svg
+              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+              />
+            </svg>
+          </div>
           <input
             type="number"
             min="1"
             step="1"
             value={quantityInput}
             onChange={(event) => setQuantityInput(event.target.value)}
-            className="rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10"
+            placeholder="Qty"
           />
           <button
             type="submit"
-            className="rounded-xl bg-indigo-600 px-6 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:scale-[1.02] hover:shadow-indigo-500/30 active:scale-[0.98]"
           >
             Add Item
           </button>
@@ -226,11 +248,10 @@ export default function PosPage() {
 
         {message && (
           <p
-            className={`rounded-xl px-4 py-2 text-sm ${
-              message.startsWith("Out of Stock")
-                ? "bg-rose-50 text-rose-700"
-                : "bg-emerald-50 text-emerald-700"
-            }`}
+            className={`rounded-xl px-4 py-2 text-sm ${message.startsWith("Out of Stock")
+              ? "bg-rose-50 text-rose-700"
+              : "bg-emerald-50 text-emerald-700"
+              }`}
           >
             {message}
           </p>
@@ -243,94 +264,118 @@ export default function PosPage() {
                 Available Products
               </p>
               <p className="text-xs text-slate-500">
-                Search and tap add to queue an item instantly.
+                Click on any product card to add it to your cart.
               </p>
             </div>
-            <input
-              value={productSearch}
-              onChange={(event) => setProductSearch(event.target.value)}
-              placeholder="Search by name or code"
-              className="rounded-full border border-slate-200 px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-            />
+            <div className="relative w-full sm:w-64">
+              <input
+                value={productSearch}
+                onChange={(event) => setProductSearch(event.target.value)}
+                placeholder="Search products..."
+                className="w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 pl-10"
+              />
+              <svg
+                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
           </div>
-          <div className="mt-4 max-h-64 overflow-y-auto rounded-xl border border-slate-100 bg-white">
-            <table className="min-w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-3 py-2">SKU</th>
-                  <th className="px-3 py-2">Product</th>
-                  <th className="px-3 py-2 text-center">Stock</th>
-                  <th className="px-3 py-2 text-right"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
+          <div className="mt-4 max-h-96 overflow-y-auto rounded-xl border border-slate-100 bg-white p-4">
+            {filteredProducts.length === 0 ? (
+              <p className="py-8 text-center text-sm text-slate-400">
+                No products match your search.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="text-slate-700">
-                    <td className="px-3 py-2 font-mono text-xs text-slate-500">
-                      {product.productCode}
-                    </td>
-                    <td className="px-3 py-2 font-medium">{product.name}</td>
-                    <td className="px-3 py-2 text-center text-slate-500">
-                      {product.stockQuantity}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <button
-                        type="button"
-                        onClick={() => addProductToCart(product, 1)}
-                        className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+                  <button
+                    key={product.id}
+                    type="button"
+                    onClick={() => addProductToCart(product, 1)}
+                    disabled={product.stockQuantity === 0}
+                    className={`group relative flex aspect-[4/3] flex-col items-start justify-between rounded-xl border p-4 text-left transition-all duration-200 ${product.stockQuantity === 0
+                      ? "cursor-not-allowed border-slate-100 bg-slate-50 opacity-60"
+                      : "cursor-pointer border-slate-200 bg-white shadow-sm hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md active:scale-95"
+                      }`}
+                  >
+                    <div className="w-full">
+                      <div className="mb-2 flex items-start justify-between">
+                        <div className="rounded-lg bg-indigo-50 p-2 text-indigo-600 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
+                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                          {product.productCode}
+                        </span>
+                      </div>
+                      <h3 className="font-semibold text-slate-900 line-clamp-2 leading-tight">
+                        {product.name}
+                      </h3>
+                    </div>
+                    <div className="w-full flex items-end justify-between mt-2">
+                      <p className="text-lg font-bold text-slate-900">
+                        ${product.price.toFixed(2)}
+                      </p>
+                      <p
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${product.stockQuantity === 0
+                          ? "bg-rose-100 text-rose-700"
+                          : product.stockQuantity <= 5
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-emerald-100 text-emerald-700"
+                          }`}
                       >
-                        + Add
-                      </button>
-                    </td>
-                  </tr>
+                        {product.stockQuantity} left
+                      </p>
+                    </div>
+                  </button>
                 ))}
-                {filteredProducts.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="px-3 py-4 text-center text-xs text-slate-400"
-                    >
-                      No products match your search.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-slate-200 text-sm">
+          <table className="min-w-full divide-y divide-slate-200 text-base">
             <thead>
               <tr>
-                <th className="px-3 py-2 text-left font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-left text-base font-semibold text-slate-500">
                   Item
                 </th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-left text-base font-semibold text-slate-500">
                   Code
                 </th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-left text-base font-semibold text-slate-500">
                   Qty
                 </th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-left text-base font-semibold text-slate-500">
                   Price
                 </th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-500">
+                <th className="px-3 py-2.5 text-left text-base font-semibold text-slate-500">
                   Subtotal
                 </th>
-                <th className="px-3 py-2"></th>
+                <th className="px-3 py-2.5"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {cart.map((item) => (
                 <tr key={item.productId}>
-                  <td className="px-3 py-2 font-semibold text-slate-800">
+                  <td className="px-3 py-2.5 text-base font-semibold text-slate-800">
                     {item.name}
                   </td>
-                  <td className="px-3 py-2 text-slate-500">
+                  <td className="px-3 py-2.5 text-base text-slate-500">
                     {item.productCode}
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2.5">
                     <input
                       type="number"
                       min="1"
@@ -341,20 +386,20 @@ export default function PosPage() {
                           Number(event.target.value)
                         )
                       }
-                      className="w-20 rounded-lg border border-slate-200 px-2 py-1 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                      className="w-20 rounded-lg border border-slate-200 px-2 py-1 text-base focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     />
                   </td>
-                  <td className="px-3 py-2 text-slate-500">
+                  <td className="px-3 py-2.5 text-base text-slate-500">
                     ${item.price.toFixed(2)}
                   </td>
-                  <td className="px-3 py-2 font-semibold text-slate-800">
-              ${(item.price * item.quantity).toFixed(2)}
+                  <td className="px-3 py-2.5 text-base font-semibold text-slate-800">
+                    ${(item.price * item.quantity).toFixed(2)}
                   </td>
-                  <td className="px-3 py-2 text-right">
+                  <td className="px-3 py-2.5 text-right">
                     <button
                       type="button"
                       onClick={() => removeItem(item.productId)}
-                      className="text-sm font-semibold text-rose-600 hover:text-rose-800"
+                      className="text-base font-semibold text-rose-600 hover:text-rose-800"
                     >
                       Remove
                     </button>
@@ -376,31 +421,31 @@ export default function PosPage() {
         </div>
       </section>
 
-      <section className="card-surface space-y-6">
+      <section className="rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Totals</h2>
           <p className="text-sm text-slate-500">
             Review subtotal, tax, and grand total before collecting payment.
           </p>
         </div>
-        <dl className="space-y-4 text-sm">
+        <dl className="space-y-4 text-base">
           <div className="flex items-center justify-between">
-            <dt className="text-slate-500">Subtotal</dt>
-            <dd className="text-slate-900 font-semibold">
+            <dt className="text-base text-slate-500">Subtotal</dt>
+            <dd className="text-base text-slate-900 font-semibold">
               ${totals.subtotal.toFixed(2)}
             </dd>
           </div>
           <div className="flex items-center justify-between">
-            <dt className="text-slate-500">
+            <dt className="text-base text-slate-500">
               Tax ({(TAX_RATE * 100).toFixed(0)}%)
             </dt>
-            <dd className="text-slate-900 font-semibold">
+            <dd className="text-base text-slate-900 font-semibold">
               ${totals.tax.toFixed(2)}
             </dd>
           </div>
-          <div className="flex items-center justify-between border-t border-slate-200 pt-4 text-base">
-            <dt className="font-semibold text-slate-900">Grand Total</dt>
-            <dd className="font-bold text-emerald-600">
+          <div className="flex items-center justify-between border-t border-slate-200 pt-4 text-lg">
+            <dt className="text-lg font-semibold text-slate-900">Grand Total</dt>
+            <dd className="text-lg font-bold text-emerald-600">
               ${totals.total.toFixed(2)}
             </dd>
           </div>
@@ -408,7 +453,7 @@ export default function PosPage() {
         <button
           type="button"
           onClick={completeSale}
-          className="w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:scale-[1.02] hover:shadow-indigo-500/30 active:scale-[0.98] py-4 text-base shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
           disabled={cart.length === 0}
         >
           Complete Sale &amp; Print Invoice
@@ -420,4 +465,3 @@ export default function PosPage() {
     </div>
   );
 }
-

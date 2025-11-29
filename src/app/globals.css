@@ -2,30 +2,77 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --radius: 0.75rem;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900;
+    @apply bg-slate-50 text-slate-900 antialiased;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,7%,0) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,30%,0) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,30%,0) 0, transparent 50%);
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
   .card-surface {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm;
+    @apply rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all duration-300 hover:shadow-md hover:border-slate-300/80;
+  }
+
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
   }
 
   .pill {
     @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide;
   }
+  
+  .input-field {
+    @apply w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 hover:scale-[1.02] hover:shadow-indigo-500/30 active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-[0.98];
+  }
 }
 
-/* Thermal Receipt Print Styles - 80mm width */
+/* Thermal Receipt Print Styles - 80mm width - Single Page */
 @media print {
+  /* Thermal printer format (80mm width) */
   @page {
     size: 80mm auto;
     margin: 0;
     padding: 0;
+    /* Prevent page breaks - ensure single page */
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+  
+  /* Standard paper format (Letter/A4) - also single page */
+  @page standard {
+    size: letter;
+    margin: 10mm;
+    page-break-inside: avoid;
+  }
+  
+  @page A4 {
+    size: A4;
+    margin: 10mm;
+    page-break-inside: avoid;
   }
 
   * {
@@ -34,29 +81,94 @@
     color-adjust: exact !important;
   }
 
+  /* Hide everything by default */
   body {
-    width: 80mm !important;
-    max-width: 80mm !important;
-    margin: 0 !important;
-    padding: 4mm !important;
+    visibility: hidden !important;
     background: white !important;
-    font-size: 10px !important;
-    line-height: 1.2 !important;
-  }
-
-  /* Hide everything except the invoice */
-  body > *:not(.thermal-receipt) {
-    display: none !important;
-  }
-
-  .thermal-receipt {
-    width: 80mm !important;
-    max-width: 80mm !important;
     margin: 0 !important;
     padding: 0 !important;
+    height: auto !important;
+    width: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Only show the thermal receipt and its children */
+  .thermal-receipt,
+  .thermal-receipt * {
+    visibility: visible !important;
+  }
+
+  /* Position the receipt at the very top-left */
+  .thermal-receipt {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 80mm !important; /* Enforce 80mm width */
+    max-width: 80mm !important;
+    margin: 0 !important;
+    padding: 4mm !important; /* Add some padding for the content */
+    
+    display: flex !important;
+    flex-direction: column !important;
     background: white !important;
     border: none !important;
     box-shadow: none !important;
+    opacity: 1 !important;
+    min-height: 0 !important;
+    max-height: none !important; /* Allow full height */
+    justify-content: flex-start !important;
+    
+    /* Prevent page breaks */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* Hide header, footer, and navigation explicitly as well */
+  header,
+  footer,
+  nav,
+  [class*="print:hidden"] {
+    display: none !important;
+  }
+}
+
+/* Screen view - narrow thermal-style layout */
+.thermal-receipt-screen {
+  width: 100%;
+  max-width: 315px; /* ~80mm in pixels */
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .thermal-receipt-screen {
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+    padding: 1rem;
+  }
+}
+
+@media print {
+  .thermal-receipt-screen {
+    max-width: 100% !important;
+    width: 80mm !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Ensure all content inside thermal receipt is visible */
+  .thermal-receipt * {
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 
   /* Logo styling for thermal */
@@ -68,11 +180,25 @@
     display: block !important;
   }
 
-  /* Header text */
+  /* Header - Logo at very top */
   .thermal-header {
     text-align: center !important;
-    margin: 0 0 3mm 0 !important;
+    margin: 0 0 2mm 0 !important;
     padding: 0 !important;
+    /* Ensure header starts at top */
+    margin-top: 0 !important;
+  }
+  
+  /* Logo container - first element at top */
+  .thermal-header > div:first-child {
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+  }
+  
+  /* Logo image at absolute top */
+  .thermal-header img {
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
   }
 
   .thermal-header h1 {
@@ -104,40 +230,56 @@
     padding: 0 !important;
   }
 
-  /* Table styling for thermal */
-  .thermal-table {
+  /* Professional Invoice Table Styling - Compact for thermal */
+  .invoice-table {
     width: 100% !important;
     border-collapse: collapse !important;
     margin: 0 !important;
-    font-size: 9px !important;
+    font-size: 0.75rem !important; /* 12px base for screen */
   }
 
-  .thermal-table thead {
+  .invoice-table thead {
     display: table-header-group !important;
   }
 
-  .thermal-table th {
-    padding: 1mm 0.5mm !important;
-    font-size: 8px !important;
+  .invoice-table th {
+    padding: 0.5rem 0.5rem !important;
     font-weight: bold !important;
-    text-align: left !important;
-    border-bottom: 1px solid #000 !important;
+    border-bottom: 2px solid #000 !important;
+    background-color: transparent !important;
+    font-size: 0.75rem !important;
   }
 
-  .thermal-table td {
+  .invoice-table td {
+    padding: 0.5rem 0.5rem !important;
+    vertical-align: middle !important;
+    font-size: 0.75rem !important;
+  }
+
+  .invoice-table tbody tr {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Print styling for invoice table */
+  .invoice-table th,
+  .invoice-table td {
+    font-size: 10px !important;
     padding: 1mm 0.5mm !important;
-    font-size: 9px !important;
-    vertical-align: top !important;
   }
 
-  .thermal-table tbody tr {
-    border-bottom: 1px dotted #666 !important;
+  .invoice-table thead th {
+    font-size: 10px !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  .invoice-table tbody tr {
+    border-bottom: 1px solid #cbd5e1 !important;
   }
 
   /* Product code emphasis */
   .thermal-product-code {
     font-weight: bold !important;
-    font-size: 8px !important;
+    font-size: 9px !important;
     font-family: monospace !important;
   }
 
@@ -153,7 +295,7 @@
     justify-content: space-between !important;
     margin: 1mm 0 !important;
     padding: 0 !important;
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
 
   .thermal-grand-total {
@@ -161,7 +303,7 @@
     border-bottom: 2px solid #000 !important;
     padding: 2mm 0 !important;
     margin: 2mm 0 !important;
-    font-size: 11px !important;
+    font-size: 13px !important;
     font-weight: bold !important;
   }
 
@@ -174,11 +316,106 @@
     font-size: 8px !important;
   }
 
-  /* Ensure no page breaks */
+  /* Prevent page breaks - ensure single page invoice */
   .thermal-receipt,
-  .thermal-receipt * {
+  .single-page-invoice {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    height: auto !important;
+    max-height: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Prevent breaks in receipt sections */
+  .thermal-receipt header,
+  .thermal-receipt section,
+  .thermal-receipt footer,
+  .thermal-receipt table,
+  .thermal-receipt tbody,
+  .thermal-receipt thead,
+  .thermal-receipt tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Logo at top - no break */
+  .thermal-header .no-break {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* Footer at bottom - directly below Grand Total */
+  .thermal-footer.bottom-footer {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    margin-top: 1mm !important;
+    margin-bottom: 0 !important;
+    padding-top: 1mm !important;
+    padding-bottom: 0 !important;
+    /* Ensure footer stays at bottom */
+    flex-shrink: 0 !important;
+  }
+
+  /* Compact spacing for single page fit - flexbox layout */
+  .thermal-receipt.single-page-invoice {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    max-height: 100vh !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Ensure no breaks in marked sections */
+  .no-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .thermal-receipt section {
+    flex-shrink: 0 !important;
+  }
+
+  .thermal-footer.bottom-footer {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Ensure table rows don't break across pages */
+  .thermal-table tbody tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  /* Compact table cells for better fit */
+  .thermal-table td,
+  .thermal-table th {
+    padding: 0.5mm 0.5mm !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Compact spacing for single page - logo at top */
+  .thermal-receipt header {
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Compact section spacing */
+  .thermal-receipt section {
+    margin-top: 1mm !important;
+    margin-bottom: 1mm !important;
+  }
+
+  /* Footer directly below Grand Total - at bottom */
+  .thermal-footer.bottom-footer {
+    margin-top: 1mm !important;
+    margin-bottom: 0 !important;
+    padding-top: 1mm !important;
+    padding-bottom: 0 !important;
   }
 }
 
