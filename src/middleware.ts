@@ -41,9 +41,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Cashiers can access POS routes
-  if (pathname.startsWith('/pos') || pathname.startsWith('/api/products') || pathname.startsWith('/api/sales')) {
-    // all authenticated users can access POS and product/sale APIs
+  // Cashiers can access POS routes and invoice routes
+  if (pathname.startsWith('/pos') || pathname.startsWith('/invoice') || pathname.startsWith('/api/products') || pathname.startsWith('/api/sales')) {
+    // all authenticated users can access POS, invoice and product/sale APIs
     return NextResponse.next();
   }
 
