@@ -4,7 +4,6 @@
   "private": true,
   "author": "Mohamed Magdy",
   "scripts": {
-    "install": "npm install --omit=dev",
     "dev": "next dev",
     "build": "next build",
     "start": "node .next/standalone/server.js",
